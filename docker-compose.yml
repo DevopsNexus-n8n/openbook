@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: openbook
+      POSTGRES_PASSWORD: openbook
+      POSTGRES_DB: openbook
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openbook"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./backend
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/srv
+    ports:
+      - "8000:8000"
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  landing:
+    image: nginx:alpine
+    volumes:
+      - ./landing:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:
