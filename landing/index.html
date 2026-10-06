@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Openbook: fewer empty chairs for salons, clinics and wellness studios</title>
+<meta name="description" content="Online booking, automatic reminders and client notes in one simple tool for salons, clinics and wellness studios.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F5F2;
+    --surface: #FFFFFF;
+    --ink: #12292B;
+    --muted: #4F6567;
+    --line: #D3DEDA;
+    --brand: #0E6B68;
+    --brand-ink: #FFFFFF;
+    --mark: #F2B632;
+    --ok: #1F7A4D;
+    --ok-bg: #DCEFE4;
+    --wait: #7A5B0A;
+    --wait-bg: #FBEBC2;
+    --gone: #8A3A2B;
+    --gone-bg: #F6DDD6;
+    --display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1B1C; --surface: #142628; --ink: #E7F0EE; --muted: #9DB3B0; --line: #264042;
+      --brand: #3CC1B8; --brand-ink: #062B29;
+      --ok: #7FD9A8; --ok-bg: #173B2A; --wait: #F2D98B; --wait-bg: #3D3410; --gone: #F2A796; --gone-bg: #44211A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1B1C; --surface: #142628; --ink: #E7F0EE; --muted: #9DB3B0; --line: #264042;
+    --brand: #3CC1B8; --brand-ink: #062B29;
+    --ok: #7FD9A8; --ok-bg: #173B2A; --wait: #F2D98B; --wait-bg: #3D3410; --gone: #F2A796; --gone-bg: #44211A;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 72px); scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--body); }
+  img, svg { max-width: 100%; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--mark); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { width: min(1080px, 100% - 40px); margin-inline: auto; }
+
+  /* header */
+  header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .logo { font: 800 24px/1 var(--display); text-decoration: none; letter-spacing: -0.02em; display: inline-flex; align-items: center; gap: 10px; }
+  .logo i { width: 22px; height: 22px; border-radius: 50%; background: var(--mark); box-shadow: inset 0 0 0 6px var(--brand); display: inline-block; }
+  nav.top a { text-decoration: none; margin-left: 24px; font-weight: 500; color: var(--muted); }
+  nav.top a:hover { color: var(--ink); }
+  @media (max-width: 560px) { nav.top a.hide-sm { display: none; } }
+
+  /* hero */
+  .hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; padding: 40px 0 88px; }
+  @media (max-width: 860px) { .hero { grid-template-columns: 1fr; gap: 40px; padding-bottom: 56px; } }
+  h1 { font: 800 clamp(40px, 6.4vw, 72px)/1 var(--display); letter-spacing: -0.035em; margin: 0 0 22px; }
+  .lede { font-size: 19px; color: var(--muted); max-width: 46ch; margin: 0 0 30px; }
+
+  .btn { display: inline-block; font: 600 16px/1 var(--body); padding: 16px 24px; border-radius: var(--radius); border: 2px solid var(--brand); background: var(--brand); color: var(--brand-ink); text-decoration: none; cursor: pointer; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); margin-left: 10px; }
+  .btn.ghost:hover { border-color: var(--ink); }
+
+  /* the day sheet: the memorable element */
+  .sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; box-shadow: 0 18px 40px -24px rgba(18, 41, 43, 0.35); }
+  .sheet h2 { font: 700 15px/1 var(--display); margin: 0 0 4px; }
+  .sheet .sub { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+  .slot { display: grid; grid-template-columns: 58px 1fr auto; gap: 12px; align-items: center; padding: 13px 0; border-top: 1px solid var(--line); }
+  .slot .t { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .slot .who { line-height: 1.3; }
+  .slot .who small { display: block; color: var(--muted); font-size: 14px; }
+  .chip { font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 999px; white-space: nowrap; transition: background 0.3s, color 0.3s; }
+  .chip.ok { background: var(--ok-bg); color: var(--ok); }
+  .chip.wait { background: var(--wait-bg); color: var(--wait); }
+  .chip.gone { background: var(--gone-bg); color: var(--gone); }
+  .sheet .foot { margin-top: 12px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); min-height: 3em; }
+  .sheet .foot b { color: var(--ink); }
+
+  /* sections */
+  section.block { padding: 72px 0; border-top: 1px solid var(--line); }
+  h2.title { font: 800 clamp(28px, 4vw, 40px)/1.1 var(--display); letter-spacing: -0.025em; margin: 0 0 12px; }
+  .intro { color: var(--muted); max-width: 56ch; margin: 0 0 40px; }
+
+  .steps { list-style: none; counter-reset: s; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+  .steps li { counter-increment: s; }
+  .steps li::before { content: counter(s); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--mark); color: #12292B; font: 800 16px/1 var(--display); margin-bottom: 14px; }
+  .steps h3 { font: 700 20px/1.2 var(--display); margin: 0 0 6px; }
+  .steps p { margin: 0; color: var(--muted); }
+
+  .feat { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 56px; }
+  @media (max-width: 760px) { .feat { grid-template-columns: 1fr; } }
+  .feat div { padding: 22px 0; border-top: 1px solid var(--line); }
+  .feat h3 { font: 700 19px/1.2 var(--display); margin: 0 0 4px; }
+  .feat p { margin: 0; color: var(--muted); }
+
+  /* pricing */
+  .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+  @media (max-width: 860px) { .plans { grid-template-columns: 1fr; } }
+  .plan { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; }
+  .plan.pick { border: 2px solid var(--brand); }
+  .plan h3 { font: 700 20px/1 var(--display); margin: 0 0 4px; }
+  .plan .for { color: var(--muted); font-size: 15px; margin: 0 0 18px; }
+  .price { font: 800 44px/1 var(--display); letter-spacing: -0.03em; }
+  .price small { font: 500 16px/1 var(--body); color: var(--muted); letter-spacing: 0; }
+  .plan ul { list-style: none; padding: 0; margin: 20px 0 0; }
+  .plan li { padding: 7px 0 7px 26px; position: relative; font-size: 16px; }
+  .plan li::before { content: ""; position: absolute; left: 0; top: 15px; width: 12px; height: 6px; border-left: 2px solid var(--brand); border-bottom: 2px solid var(--brand); transform: rotate(-45deg); }
+  .note { color: var(--muted); font-size: 15px; margin-top: 20px; }
+
+  /* waitlist */
+  .join { background: var(--brand); color: var(--brand-ink); border-radius: 18px; padding: clamp(28px, 5vw, 56px); margin: 24px 0 72px; }
+  .join h2 { font: 800 clamp(28px, 4vw, 42px)/1.1 var(--display); letter-spacing: -0.025em; margin: 0 0 10px; }
+  .join p { margin: 0 0 26px; max-width: 50ch; opacity: 0.92; }
+  .join form { display: flex; flex-wrap: wrap; gap: 12px; max-width: 640px; }
+  .join label { position: absolute; left: -9999px; }
+  .join input, .join select { font: 400 17px/1 var(--body); padding: 16px; border-radius: var(--radius); border: 2px solid transparent; background: #fff; color: #12292B; flex: 1 1 200px; min-width: 0; }
+  .join button { font: 700 16px/1 var(--body); padding: 16px 24px; border-radius: var(--radius); border: 0; background: var(--mark); color: #12292B; cursor: pointer; }
+  .join button:hover { filter: brightness(1.05); }
+  .join button[disabled] { opacity: 0.6; cursor: progress; }
+  #msg { margin-top: 14px; min-height: 1.5em; font-weight: 600; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .chip { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#"><i aria-hidden="true"></i>Openbook</a>
+    <nav class="top" aria-label="Main">
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="#pricing">Pricing</a>
+      <a href="#join">Join the waitlist</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h1>Fewer empty chairs.</h1>
+        <p class="lede">Openbook takes bookings online, reminds every client before they come in, and fills the gap when someone cancels. Built for salons, clinics and wellness studios.</p>
+        <a class="btn" href="#join">Join the waitlist</a>
+        <a class="btn ghost" href="#how">See how it works</a>
+      </div>
+
+      <div class="sheet" aria-label="Example of a day's appointments in Openbook">
+        <h2>Thursday</h2>
+        <p class="sub">Example day sheet</p>
+        <div class="slot"><span class="t">9:00</span><span class="who">Meera S.<small>Cut and colour</small></span><span class="chip ok" data-final="ok" data-label="Confirmed">Confirmed</span></div>
+        <div class="slot"><span class="t">10:30</span><span class="who">Arjun K.<small>Physio follow-up</small></span><span class="chip ok" data-final="ok" data-label="Confirmed">Confirmed</span></div>
+        <div class="slot" id="gap"><span class="t">12:00</span><span class="who">Nisha P.<small>Facial, 60 min</small></span><span class="chip ok" id="gapChip" data-final="ok" data-label="Filled from waitlist">Filled from waitlist</span></div>
+        <div class="slot"><span class="t">2:30</span><span class="who">Rahul T.<small>Massage, 45 min</small></span><span class="chip ok" data-final="ok" data-label="Confirmed">Confirmed</span></div>
+        <div class="foot" id="foot" aria-live="polite"><b>12:00 was cancelled</b> at 8:10 am. The next person on the waitlist took the slot by 8:14.</div>
+      </div>
+    </div>
+
+    <section class="block" id="how">
+      <h2 class="title">From booking to visit, without the phone calls</h2>
+      <p class="intro">Clients book themselves. Openbook does the chasing.</p>
+      <ol class="steps">
+        <li><h3>Client books online</h3><p>Every business gets its own booking page. Clients pick a service, a person and a time.</p></li>
+        <li><h3>Reminders go out</h3><p>A reminder is sent before each visit. The client taps to confirm or cancel.</p></li>
+        <li><h3>Cancelled slots fill</h3><p>If someone cancels, people on your waitlist are offered the time first.</p></li>
+      </ol>
+    </section>
+
+    <section class="block">
+      <h2 class="title">Everything a small studio needs, nothing it doesn't</h2>
+      <p class="intro">No training course required. Most owners are taking bookings the same afternoon.</p>
+      <div class="feat">
+        <div><h3>Client records</h3><p>Contact details, visit history and private notes in one place.</p></div>
+        <div><h3>Staff calendars</h3><p>Each person has their own hours, days off and services.</p></div>
+        <div><h3>Your own booking page</h3><p>A link for Instagram, Google and WhatsApp that always shows real availability.</p></div>
+        <div><h3>Import your list</h3><p>Bring clients over from a spreadsheet. We help with the first import.</p></div>
+      </div>
+    </section>
+
+    <section class="block" id="pricing">
+      <h2 class="title">Simple monthly pricing</h2>
+      <p class="intro">Launch pricing for the first businesses. Cancel any time.</p>
+      <div class="plans">
+        <div class="plan">
+          <h3>Solo</h3><p class="for">One person, one calendar</p>
+          <div class="price">$19<small> / month</small></div>
+          <ul><li>Online booking page</li><li>Email reminders</li><li>Client records and notes</li></ul>
+        </div>
+        <div class="plan pick">
+          <h3>Studio</h3><p class="for">Up to 5 staff</p>
+          <div class="price">$39<small> / month</small></div>
+          <ul><li>Everything in Solo</li><li>SMS and WhatsApp reminders</li><li>Waitlist that fills cancellations</li><li>Staff calendars</li></ul>
+        </div>
+        <div class="plan">
+          <h3>Clinic</h3><p class="for">Multiple staff and rooms</p>
+          <div class="price">$79<small> / month</small></div>
+          <ul><li>Everything in Studio</li><li>Unlimited staff</li><li>Reports on visits and no-shows</li><li>Priority support</li></ul>
+        </div>
+      </div>
+      <p class="note">Prices are placeholders until launch.</p>
+    </section>
+
+    <section class="join" id="join" aria-labelledby="joinTitle">
+      <h2 id="joinTitle">Be one of the first studios on Openbook</h2>
+      <p>Join the waitlist. Early businesses get free setup help and launch pricing for as long as they stay.</p>
+      <form id="form" novalidate>
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" placeholder="you@yourstudio.com" autocomplete="email" required>
+        <label for="type">Type of business</label>
+        <select id="type" name="type">
+          <option value="">Type of business</option>
+          <option value="salon">Salon or barber</option>
+          <option value="clinic">Clinic</option>
+          <option value="wellness">Wellness or spa</option>
+          <option value="other">Something else</option>
+        </select>
+        <button type="submit" id="btn">Join the waitlist</button>
+      </form>
+      <div id="msg" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Openbook, 2026</span>
+    <span>Questions? Email hello@a2life.com</span>
+  </footer>
+</div>
+
+<script>
+  // Set this to your API address once it is deployed, for example "https://api.a2life.com".
+  var API_URL = "";
+
+  // One page-load moment: the sheet plays out a cancellation being refilled.
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    var chips = document.querySelectorAll(".sheet .chip");
+    var foot = document.getElementById("foot");
+    var finalFoot = foot.innerHTML;
+    function set(el, cls, text) { el.className = "chip " + cls; el.textContent = text; }
+    chips.forEach(function (c) { set(c, "wait", "Reminder sent"); });
+    var gap = document.getElementById("gapChip");
+    foot.innerHTML = "Reminders went out at 8:00 am.";
+    var i = 0;
+    chips.forEach(function (c) {
+      if (c === gap) return;
+      setTimeout(function () { set(c, "ok", "Confirmed"); }, 700 + 500 * i++);
+    });
+    setTimeout(function () { set(gap, "gone", "Cancelled"); foot.innerHTML = "<b>12:00 was cancelled</b> at 8:10 am. Offering it to the waitlist."; }, 2600);
+    setTimeout(function () { set(gap, "ok", "Filled from waitlist"); foot.innerHTML = finalFoot; }, 4400);
+  })();
+
+  // Waitlist form
+  (function () {
+    var form = document.getElementById("form");
+    var msg = document.getElementById("msg");
+    var btn = document.getElementById("btn");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = document.getElementById("email").value.trim();
+      var type = document.getElementById("type").value;
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        msg.textContent = "Enter a valid email address, like you@yourstudio.com.";
+        return;
+      }
+      if (!API_URL) {
+        msg.textContent = "The waitlist isn't connected yet. Please email hello@a2life.com.";
+        return;
+      }
+      btn.disabled = true;
+      msg.textContent = "Joining...";
+      fetch(API_URL + "/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, business_type: type || null })
+      }).then(function (r) {
+        if (!r.ok) throw new Error("bad status");
+        msg.textContent = "You're on the list. We'll email you when Openbook opens.";
+        form.reset();
+      }).catch(function () {
+        msg.textContent = "That didn't go through. Try again, or email hello@a2life.com.";
+      }).then(function () { btn.disabled = false; });
+    });
+  })();
+</script>
+</body>
+</html>
