@@ -231,13 +231,16 @@
 
   <footer>
     <span>Openbook, 2026</span>
-    <span>Questions? Email hello@a2life.com</span>
+    <span>Questions? Email contact@aitoollife.com</span>
   </footer>
 </div>
 
 <script>
-  // Set this to your API address once it is deployed, for example "https://api.a2life.com".
-  var API_URL = "";
+  // Set LIVE_API to your API address (for example "https://api.aitoollife.com") once the API is online.
+  // While it is empty, the waitlist form tells visitors to email instead.
+  var LIVE_API = "";
+  var host = location.hostname;
+  var API_URL = (host === "localhost" || host === "127.0.0.1") ? "http://localhost:8000" : LIVE_API;
 
   // One page-load moment: the sheet plays out a cancellation being refilled.
   (function () {
@@ -273,7 +276,7 @@
         return;
       }
       if (!API_URL) {
-        msg.textContent = "The waitlist isn't connected yet. Please email hello@a2life.com.";
+        msg.innerHTML = "The waitlist opens soon. For early access, email <a href=\"mailto:contact@aitoollife.com?subject=Openbook%20early%20access\" style=\"color:inherit\">contact@aitoollife.com</a>.";
         return;
       }
       btn.disabled = true;
@@ -287,7 +290,7 @@
         msg.textContent = "You're on the list. We'll email you when Openbook opens.";
         form.reset();
       }).catch(function () {
-        msg.textContent = "That didn't go through. Try again, or email hello@a2life.com.";
+        msg.textContent = "That didn't go through. Try again, or email contact@aitoollife.com.";
       }).then(function () { btn.disabled = false; });
     });
   })();
