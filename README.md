@@ -21,7 +21,18 @@ Booking and client management for salons, clinics and wellness studios. (Working
 
 ## Stages
 
-1. Foundation: repo, Docker, CI, landing page and waitlist (this commit)
-2. Multi-tenancy, auth, billing
+1. Foundation: repo, Docker, CI, landing page and waitlist (done)
+2a. Tenants, signup/login, migrations (done)
+2b. Billing with Razorpay
 3. Clients, services, staff, appointments, reminders
 4. Production infrastructure
+
+## Database migrations
+
+    cd backend
+    alembic revision --autogenerate -m "describe the change"
+    alembic upgrade head
+
+## Rule for every business table
+
+Add `tenant_id`, depend on `current_tenant_id` in the route, and filter every query by it.
